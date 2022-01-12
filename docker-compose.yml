@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: mariadb:10.7
+    ports:
+      - 3312:3306
+    environment:
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./db_data:/var/lib/mysql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_KEY: "${APP_KEY}"
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8006:80
+    depends_on:
+      - db
+  # npm:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - .:/var/www/html
+  #   entrypoint: ['npm']
+  #   working_dir: /var/www/html
+  # artisan:
+  #   build:
+  #     context: .
+  #   volumes:
+  #   - .:/var/www/html
+  #   depends_on:
+  #     - mysql
+  #   working_dir: /var/www/html
+  #   entrypoint: ['php', '/var/www/html/artisan']
+  # mailhog:
+  #   image: mailhog/mailhog:latest
+  #   container_name: mailhog
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
